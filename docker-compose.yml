@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  pyrning-db:
+    image: postgres:latest
+    container_name: pyrning-db
+    environment:
+      POSTGRES_DB: ${DB_NAME?err}
+      POSTGRES_USER: ${DB_USER?err}
+      POSTGRES_PASSWORD: ${DB_PASS?err}
+    ports:
+      - "${DB_PORT?err}:5432"
+    volumes:
+      - ./docker/postgres:/var/lib/postgresql/data
+    networks:
+      - default 
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+      - "${SMTP_PORT?err}:1025"  
+      - "8025:8025" 
+    environment:
+      MH_SMTP_AUTH: 1
+      MH_SMTP_USERNAME: ${SMTP_USER?err}
+      MH_SMTP_PASSWORD: ${SMTP_PASS?err}
+
+networks:
+  default: 
+    driver: bridge  
+volumes:
+  data:
